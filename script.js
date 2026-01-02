@@ -137,11 +137,15 @@ async function processImage() {
 
         // Enviar para n8n
         // Nota: Se houver erro de CORS, pode ser necessário configurar CORS no n8n
+        // Para FormData, não definir Content-Type - o browser define automaticamente com boundary
         const response = await fetch(N8N_WEBHOOK_URL, {
             method: 'POST',
             body: formData,
             mode: 'cors',
-            credentials: 'omit'
+            credentials: 'omit',
+            headers: {
+                // Não definir Content-Type para FormData - o browser faz isso automaticamente
+            }
         });
 
         if (!response.ok) {
