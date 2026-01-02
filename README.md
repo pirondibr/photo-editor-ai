@@ -174,6 +174,18 @@ projeto-teste/
 - O workflow retorna a resposta processada pelo Gemini
 - Todos os dados são processados localmente (n8n local)
 
+## 🌐 Publicar no GitHub Pages
+
+Para publicar o site no GitHub Pages, veja o arquivo [GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md) com instruções detalhadas.
+
+**Resumo rápido:**
+1. Vá em Settings → Pages no seu repositório GitHub
+2. Selecione branch `main` e pasta `/ (root)`
+3. Salve e aguarde alguns minutos
+4. Seu site estará em: `https://pirondibr.github.io/photo-editor-ai/`
+
+⚠️ **Importante**: Para o site funcionar no GitHub Pages, você precisa ter o n8n acessível publicamente (não pode ser localhost). Veja mais detalhes em [GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md).
+
 ## 🔄 Próximos Passos
 
 - Adicionar suporte para download da imagem processada

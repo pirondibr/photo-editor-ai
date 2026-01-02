@@ -1,5 +1,8 @@
 // Configuração - Altere para a URL do seu webhook n8n
-const N8N_WEBHOOK_URL = 'http://localhost:5678/webhook/photo-editor';
+// Para uso local: 'http://localhost:5678/webhook/photo-editor'
+// Para uso no GitHub Pages: use a URL pública do seu n8n (ex: 'https://seu-n8n.com/webhook/photo-editor')
+// Ou configure via variável de ambiente/secrets do GitHub Pages
+const N8N_WEBHOOK_URL = window.N8N_WEBHOOK_URL || 'http://localhost:5678/webhook/photo-editor';
 
 // Elementos DOM
 const uploadArea = document.getElementById('uploadArea');
