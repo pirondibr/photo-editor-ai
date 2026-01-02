@@ -7,7 +7,8 @@ let USE_CORS_PROXY = false;
 const N8N_BASE_URL = 'https://pirondi.app.n8n.cloud/webhook/photo-editor';
 
 // Proxy CORS gratuito (para contornar bloqueio CORS do n8n cloud)
-const CORS_PROXY = 'https://corsproxy.io/?';
+// Usando allorigins.win que é mais confiável
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
 // Verifica se há uma meta tag configurada
 const metaTag = document.querySelector('meta[name="n8n-webhook-url"]');
