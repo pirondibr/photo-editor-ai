@@ -1,31 +1,27 @@
 // Configuração - URL do webhook n8n
 // Detecta automaticamente se está no GitHub Pages ou local
-function getN8NWebhookURL() {
-    // Verifica se há uma meta tag configurada
-    const metaTag = document.querySelector('meta[name="n8n-webhook-url"]');
-    if (metaTag && metaTag.content) {
-        return metaTag.content;
-    }
-    
+let N8N_WEBHOOK_URL;
+
+// Verifica se há uma meta tag configurada
+const metaTag = document.querySelector('meta[name="n8n-webhook-url"]');
+if (metaTag && metaTag.content) {
+    N8N_WEBHOOK_URL = metaTag.content;
+} else if (window.N8N_WEBHOOK_URL) {
     // Verifica se há variável global configurada
-    if (window.N8N_WEBHOOK_URL) {
-        return window.N8N_WEBHOOK_URL;
-    }
-    
+    N8N_WEBHOOK_URL = window.N8N_WEBHOOK_URL;
+} else {
     // Detecta se está no GitHub Pages
     const isGitHubPages = window.location.hostname.includes('github.io');
     
     if (isGitHubPages) {
         // Para GitHub Pages, use a URL do n8n cloud
         // URL baseada no instanceId do n8n: 38686966-5bcc-490b-a9f3-e27b043b1eed
-        return 'https://38686966-5bcc-490b-a9f3-e27b043b1eed.app.n8n.cloud/webhook/photo-editor';
+        N8N_WEBHOOK_URL = 'https://38686966-5bcc-490b-a9f3-e27b043b1eed.app.n8n.cloud/webhook/photo-editor';
     } else {
         // Para desenvolvimento local
-        return 'http://localhost:5678/webhook/photo-editor';
+        N8N_WEBHOOK_URL = 'http://localhost:5678/webhook/photo-editor';
     }
 }
-
-const N8N_WEBHOOK_URL = getN8NWebhookURL();
 
 // Elementos DOM
 const uploadArea = document.getElementById('uploadArea');
