@@ -15,8 +15,7 @@ if (metaTag && metaTag.content) {
     
     if (isGitHubPages) {
         // Para GitHub Pages, use a URL do n8n cloud
-        // URL baseada no instanceId do n8n: 38686966-5bcc-490b-a9f3-e27b043b1eed
-        N8N_WEBHOOK_URL = 'https://38686966-5bcc-490b-a9f3-e27b043b1eed.app.n8n.cloud/webhook/photo-editor';
+        N8N_WEBHOOK_URL = 'https://pirondi.app.n8n.cloud/webhook/photo-editor';
     } else {
         // Para desenvolvimento local
         N8N_WEBHOOK_URL = 'http://localhost:5678/webhook/photo-editor';
