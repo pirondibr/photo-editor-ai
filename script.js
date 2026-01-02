@@ -128,22 +128,20 @@ async function processImage() {
         // Converter imagem para base64
         const base64Image = await fileToBase64(selectedFile);
         
-        // Preparar dados para envio
-        const formData = new FormData();
-        formData.append('image', selectedFile);
-        formData.append('prompt', promptInput.value.trim());
-        formData.append('imageBase64', base64Image);
+        // Preparar dados como JSON simples (evita preflight CORS)
+        const jsonData = {
+            prompt: promptInput.value.trim(),
+            imageBase64: base64Image,
+            mimeType: selectedFile.type || 'image/jpeg'
+        };
 
-        // Enviar para n8n
-        // Nota: Se houver erro de CORS, pode ser necessário configurar CORS no n8n
-        // Para FormData, não definir Content-Type - o browser define automaticamente com boundary
+        // Enviar para n8n como text/plain (evita preflight CORS)
+        // O n8n consegue parsear JSON mesmo com Content-Type: text/plain
         const response = await fetch(N8N_WEBHOOK_URL, {
             method: 'POST',
-            body: formData,
-            mode: 'cors',
-            credentials: 'omit',
+            body: JSON.stringify(jsonData),
             headers: {
-                // Não definir Content-Type para FormData - o browser faz isso automaticamente
+                'Content-Type': 'text/plain'
             }
         });
 
