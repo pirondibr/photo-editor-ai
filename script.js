@@ -155,7 +155,14 @@ async function processImage() {
         
     } catch (error) {
         console.error('Erro ao processar imagem:', error);
-        showError(`Erro ao processar imagem: ${error.message}. Verifique se o n8n está rodando e o webhook está configurado corretamente.`);
+        
+        // Mensagem de erro mais específica para CORS
+        let errorMessage = error.message;
+        if (error.message.includes('CORS') || error.message.includes('Failed to fetch')) {
+            errorMessage = 'Erro de CORS: O n8n precisa estar configurado para permitir requisições do GitHub Pages. Verifique as configurações de CORS no n8n.';
+        }
+        
+        showError(`Erro ao processar imagem: ${errorMessage}. Verifique se o n8n está rodando e o webhook está configurado corretamente.`);
     } finally {
         setLoading(false);
     }
