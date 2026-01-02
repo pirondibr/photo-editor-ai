@@ -1,8 +1,31 @@
-// Configuração - Altere para a URL do seu webhook n8n
-// Para uso local: 'http://localhost:5678/webhook/photo-editor'
-// Para uso no GitHub Pages: use a URL pública do seu n8n (ex: 'https://seu-n8n.com/webhook/photo-editor')
-// Ou configure via variável de ambiente/secrets do GitHub Pages
-const N8N_WEBHOOK_URL = window.N8N_WEBHOOK_URL || 'http://localhost:5678/webhook/photo-editor';
+// Configuração - URL do webhook n8n
+// Detecta automaticamente se está no GitHub Pages ou local
+function getN8NWebhookURL() {
+    // Verifica se há uma meta tag configurada
+    const metaTag = document.querySelector('meta[name="n8n-webhook-url"]');
+    if (metaTag && metaTag.content) {
+        return metaTag.content;
+    }
+    
+    // Verifica se há variável global configurada
+    if (window.N8N_WEBHOOK_URL) {
+        return window.N8N_WEBHOOK_URL;
+    }
+    
+    // Detecta se está no GitHub Pages
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    
+    if (isGitHubPages) {
+        // Para GitHub Pages, use a URL do n8n cloud
+        // URL baseada no instanceId do n8n: 38686966-5bcc-490b-a9f3-e27b043b1eed
+        return 'https://38686966-5bcc-490b-a9f3-e27b043b1eed.app.n8n.cloud/webhook/photo-editor';
+    } else {
+        // Para desenvolvimento local
+        return 'http://localhost:5678/webhook/photo-editor';
+    }
+}
+
+const N8N_WEBHOOK_URL = getN8NWebhookURL();
 
 // Elementos DOM
 const uploadArea = document.getElementById('uploadArea');
