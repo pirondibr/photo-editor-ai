@@ -136,9 +136,12 @@ async function processImage() {
         formData.append('imageBase64', base64Image);
 
         // Enviar para n8n
+        // Nota: Se houver erro de CORS, pode ser necessário configurar CORS no n8n
         const response = await fetch(N8N_WEBHOOK_URL, {
             method: 'POST',
-            body: formData
+            body: formData,
+            mode: 'cors',
+            credentials: 'omit'
         });
 
         if (!response.ok) {
