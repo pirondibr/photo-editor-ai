@@ -22,9 +22,8 @@ if (metaTag && metaTag.content) {
     const isGitHubPages = window.location.hostname.includes('github.io');
     
     if (isGitHubPages) {
-        // Para GitHub Pages, usar proxy CORS
-        USE_CORS_PROXY = true;
-        N8N_WEBHOOK_URL = CORS_PROXY + encodeURIComponent(N8N_BASE_URL);
+        // Para GitHub Pages, usar URL direta do n8n cloud
+        N8N_WEBHOOK_URL = N8N_BASE_URL;
     } else {
         // Para desenvolvimento local
         N8N_WEBHOOK_URL = 'http://localhost:5678/webhook/photo-editor';
