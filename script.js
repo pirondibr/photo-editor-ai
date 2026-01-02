@@ -205,8 +205,13 @@ function setLoading(loading) {
 function showResult(result) {
     // O resultado pode vir em diferentes formatos dependendo da resposta do n8n
     let resultText = '';
+    let resultImage = '';
     
-    // O n8n retorna o resultado no formato { result: "...", success: true }
+    // O n8n retorna o resultado no formato { result: "...", image: "...", success: true }
+    if (result && result.image) {
+        resultImage = result.image;
+    }
+    
     if (result && result.result) {
         resultText = result.result;
     } else if (typeof result === 'string') {
@@ -215,11 +220,46 @@ function showResult(result) {
         resultText = result.text || result.content || result.message;
     } else if (result.choices && result.choices[0] && result.choices[0].message) {
         resultText = result.choices[0].message.content;
-    } else {
+    } else if (!resultImage) {
         resultText = JSON.stringify(result, null, 2);
     }
     
-    resultContent.textContent = resultText;
+    // Limpar conteúdo anterior
+    resultContent.innerHTML = '';
+    
+    // Mostrar imagem se existir
+    if (resultImage) {
+        const img = document.createElement('img');
+        img.src = resultImage;
+        img.alt = 'Imagem gerada';
+        img.style.maxWidth = '100%';
+        img.style.borderRadius = '8px';
+        img.style.marginBottom = '10px';
+        resultContent.appendChild(img);
+        
+        // Adicionar botão de download
+        const downloadBtn = document.createElement('a');
+        downloadBtn.href = resultImage;
+        downloadBtn.download = 'imagem-editada.png';
+        downloadBtn.className = 'download-btn';
+        downloadBtn.textContent = '⬇️ Baixar Imagem';
+        downloadBtn.style.display = 'inline-block';
+        downloadBtn.style.marginTop = '10px';
+        downloadBtn.style.padding = '10px 20px';
+        downloadBtn.style.background = '#10b981';
+        downloadBtn.style.color = 'white';
+        downloadBtn.style.borderRadius = '6px';
+        downloadBtn.style.textDecoration = 'none';
+        resultContent.appendChild(downloadBtn);
+    }
+    
+    // Mostrar texto se existir
+    if (resultText) {
+        const textDiv = document.createElement('p');
+        textDiv.textContent = resultText;
+        resultContent.appendChild(textDiv);
+    }
+    
     resultSection.style.display = 'block';
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
