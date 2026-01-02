@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Fotos com IA</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Editor de Fotos com IA</h1>
+            <p>Faça upload de uma imagem e descreva o que deseja fazer com ela</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <p class="upload-text">Clique para fazer upload ou arraste uma imagem aqui</p>
+                    <p class="upload-hint">Formatos suportados: JPG, PNG, GIF, WebP</p>
+                    <input type="file" id="imageInput" accept="image/*" hidden>
+                </div>
+                
+                <div class="preview-section" id="previewSection" style="display: none;">
+                    <div class="image-preview">
+                        <img id="previewImage" src="" alt="Preview">
+                        <button class="remove-image" id="removeImage">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prompt-section">
+                <label for="promptInput">Descreva o que deseja fazer com a imagem:</label>
+                <textarea 
+                    id="promptInput" 
+                    placeholder="Ex: Remova o fundo, adicione um filtro vintage, melhore a qualidade, etc..."
+                    rows="4"
+                ></textarea>
+            </div>
+
+            <div class="action-section">
+                <button class="btn-primary" id="processBtn" disabled>
+                    <span class="btn-text">Processar Imagem</span>
+                    <span class="btn-loader" style="display: none;">
+                        <span class="spinner"></span>
+                        Processando...
+                    </span>
+                </button>
+            </div>
+
+            <div class="result-section" id="resultSection" style="display: none;">
+                <h3>Resultado:</h3>
+                <div class="result-content" id="resultContent"></div>
+            </div>
+
+            <div class="error-message" id="errorMessage" style="display: none;"></div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

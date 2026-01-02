@@ -1,0 +1,21 @@
+{
+  "name": "photo-editor-ai",
+  "version": "1.0.0",
+  "description": "Editor de fotos com IA usando Gemini via OpenRouter e n8n",
+  "scripts": {
+    "start": "http-server -p 8000 -c-1",
+    "dev": "http-server -p 8000 -c-1 -o"
+  },
+  "keywords": [
+    "photo-editor",
+    "ai",
+    "gemini",
+    "openrouter",
+    "n8n"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

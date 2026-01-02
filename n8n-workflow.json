@@ -1,0 +1,125 @@
+{
+  "name": "Photo Editor - OpenRouter Gemini",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "photo-editor",
+        "responseMode": "lastNode",
+        "responseData": "firstEntryJson",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [250, 300],
+      "webhookId": "photo-editor"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Processar dados do webhook\nconst items = $input.all();\nconst item = items[0];\n\n// Extrair imagem e prompt do FormData\n// O webhook recebe FormData com 'image' (arquivo) e 'prompt' (texto)\nconst image = item.binary?.image || item.binary?.data || null;\nconst prompt = item.json.prompt || item.json.body?.prompt || '';\nconst imageBase64 = item.json.imageBase64 || '';\n\n// Se não temos a imagem em binary, tentar usar base64\nlet imageData = null;\nlet mimeType = 'image/jpeg';\n\nif (image) {\n  // A imagem vem como binary data, já está em base64\n  imageData = image.data;\n  mimeType = image.mimeType || image.fileExtension ? `image/${image.fileExtension || 'jpeg'}` : 'image/jpeg';\n} else if (imageBase64) {\n  imageData = imageBase64;\n  // Tentar detectar o tipo MIME do base64\n  if (imageBase64.startsWith('data:')) {\n    const mimeMatch = imageBase64.match(/data:([^;]+);base64,/);\n    if (mimeMatch) {\n      mimeType = mimeMatch[1];\n      imageData = imageBase64.split(',')[1];\n    }\n  }\n}\n\nif (!imageData || !prompt) {\n  throw new Error('Imagem e prompt são obrigatórios. Verifique se enviou ambos os dados.');\n}\n\n// Preparar payload para OpenRouter com Gemini 2.5 Flash Image\n// OpenRouter espera o formato do Gemini com imagem em base64\nconst payload = {\n  model: \"google/gemini-2.5-flash-image\",\n  messages: [\n    {\n      role: \"user\",\n      content: [\n        {\n          type: \"text\",\n          text: prompt\n        },\n        {\n          type: \"image_url\",\n          image_url: {\n            url: `data:${mimeType};base64,${imageData}`\n          }\n        }\n      ]\n    }\n  ]\n};\n\nreturn {\n  json: {\n    payload: payload,\n    prompt: prompt\n  }\n};"
+      },
+      "id": "code-node",
+      "name": "Processar Dados",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.OPENROUTER_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "http://localhost:5678"
+            },
+            {
+              "name": "X-Title",
+              "value": "Photo Editor App"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.payload }}",
+        "options": {}
+      },
+      "id": "http-request-node",
+      "name": "OpenRouter API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [650, 300],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsCode": "// Processar resposta do OpenRouter\nconst items = $input.all();\nconst item = items[0];\n\nconst response = item.json;\n\n// Extrair o texto da resposta\nlet resultText = '';\n\nif (response.choices && response.choices[0]) {\n  const choice = response.choices[0];\n  if (choice.message && choice.message.content) {\n    resultText = choice.message.content;\n  }\n} else if (response.content) {\n  resultText = response.content;\n} else if (typeof response === 'string') {\n  resultText = response;\n} else {\n  resultText = JSON.stringify(response, null, 2);\n}\n\nreturn {\n  json: {\n    result: resultText,\n    success: true\n  }\n};"
+      },
+      "id": "process-response-node",
+      "name": "Processar Resposta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Processar Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processar Dados": {
+      "main": [
+        [
+          {
+            "node": "OpenRouter API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter API": {
+      "main": [
+        [
+          {
+            "node": "Processar Resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}
