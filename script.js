@@ -1,6 +1,13 @@
 // Configuração - URL do webhook n8n
 // Detecta automaticamente se está no GitHub Pages ou local
 let N8N_WEBHOOK_URL;
+let USE_CORS_PROXY = false;
+
+// URL base do n8n
+const N8N_BASE_URL = 'https://pirondi.app.n8n.cloud/webhook/photo-editor';
+
+// Proxy CORS gratuito (para contornar bloqueio CORS do n8n cloud)
+const CORS_PROXY = 'https://corsproxy.io/?';
 
 // Verifica se há uma meta tag configurada
 const metaTag = document.querySelector('meta[name="n8n-webhook-url"]');
@@ -14,8 +21,9 @@ if (metaTag && metaTag.content) {
     const isGitHubPages = window.location.hostname.includes('github.io');
     
     if (isGitHubPages) {
-        // Para GitHub Pages, use a URL do n8n cloud
-        N8N_WEBHOOK_URL = 'https://pirondi.app.n8n.cloud/webhook/photo-editor';
+        // Para GitHub Pages, usar proxy CORS
+        USE_CORS_PROXY = true;
+        N8N_WEBHOOK_URL = CORS_PROXY + encodeURIComponent(N8N_BASE_URL);
     } else {
         // Para desenvolvimento local
         N8N_WEBHOOK_URL = 'http://localhost:5678/webhook/photo-editor';
